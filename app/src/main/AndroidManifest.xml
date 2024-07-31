@@ -15,7 +15,7 @@
         <activity
             android:name=".activity.WelcomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.WPJ_Kotlin" >
+            android:theme="@style/Theme.WPJ_Kotlin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
