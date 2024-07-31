@@ -1,4 +1,4 @@
-package com.example.wpj_kotlin.ui.theme
+package com.example.wpj_kotlin.activity.ui.theme
 
 import android.app.Activity
 import android.os.Build
