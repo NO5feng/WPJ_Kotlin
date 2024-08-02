@@ -32,14 +32,14 @@ fun WelcomeUi() {
     ) {
         Image(
             painter = imageLogo,
-            contentDescription = "WelcomeUi Image",
+            contentDescription = null,
             Modifier.size(320.dp)
                 .offset(y = 100.dp)
 
         )
         Image(
             painter = imageSlogan,
-            contentDescription = "WelcomeUi Image",
+            contentDescription = null,
             Modifier.size(200.dp)
                 .offset(y = 300.dp)
         )

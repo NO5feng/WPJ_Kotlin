@@ -10,15 +10,12 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.ui.MainUi
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WPJ_KotlinTheme {
-                Scaffold() {
-                    MainUi()
-                }
+                MainUi()
             }
         }
     }
