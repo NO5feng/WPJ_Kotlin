@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -23,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -31,13 +36,15 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainUi() {
+fun MainUi(onTextChanged: (String) -> Unit) {
     val context = LocalContext.current
     val backgroundColor = ContextCompat.getColor(context, R.color.yellow)
     val subBackgroundColor = ContextCompat.getColor(context, R.color.milk_white)
+    val cursor = ContextCompat.getColor(context, R.color.pink)
     val topBarTitle = context.getString(R.string.home_title)
     val editText = context.getString(R.string.home_edit_hint)
-    var text by remember { mutableStateOf("") }
+
+    var text by remember { mutableStateOf(TextFieldValue()) }
 
     val topAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = Color(backgroundColor),
@@ -70,18 +77,37 @@ fun MainUi() {
             ) {
                 TextField(
                     value = text,
-                    onValueChange = { newText -> text = newText },
+                    onValueChange = {
+                        text = it
+                        onTextChanged(it.text)
+                    },
                     colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color(backgroundColor),
-                        disabledIndicatorColor = Color(backgroundColor),
-                        unfocusedIndicatorColor = Color(backgroundColor),
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
                         focusedContainerColor = Color(backgroundColor),
-                        disabledContainerColor = Color(backgroundColor),
                         unfocusedContainerColor = Color(backgroundColor),
+                        focusedLabelColor = Color.Black,
+                        unfocusedLabelColor = Color.Black,
+                        cursorColor = Color(cursor),
+                        focusedLeadingIconColor = Color.Black,
+                        unfocusedLeadingIconColor = Color.Black
                     ),
                     label = { Text(text = editText) },
-                    modifier = Modifier.padding(16.dp),
-                    singleLine = true // 使输入框为单行
+                    singleLine = true, // 使输入框为单行
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .width(300.dp)
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 50.dp, topEnd = 50.dp,
+                                bottomStart = 50.dp, bottomEnd = 50.dp
+                            )
+                        )
                 )
             }
         }
@@ -92,6 +118,6 @@ fun MainUi() {
 @Composable
 fun MainPreview() {
     WPJ_KotlinTheme {
-        MainUi()
+        MainUi { text -> }
     }
 }
