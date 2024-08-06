@@ -1,13 +1,18 @@
 package com.example.wpj_kotlin.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,15 +40,16 @@ import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MainUi(onTextChanged: (String) -> Unit) {
+fun MainUi(onTextChanged: (String) -> Unit, onImageClick: () -> Unit) {
     val context = LocalContext.current
     val backgroundColor = ContextCompat.getColor(context, R.color.yellow)
     val subBackgroundColor = ContextCompat.getColor(context, R.color.milk_white)
     val cursor = ContextCompat.getColor(context, R.color.pink)
     val topBarTitle = context.getString(R.string.home_title)
     val editText = context.getString(R.string.home_edit_hint)
+    val addBtn = painterResource(id = R.drawable.add_button)
 
     var text by remember { mutableStateOf(TextFieldValue()) }
 
@@ -69,11 +76,12 @@ fun MainUi(onTextChanged: (String) -> Unit) {
                 .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
                 .background(Color(subBackgroundColor))
-        ){
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .padding(bottom = 50.dp)
             ) {
                 TextField(
                     value = text,
@@ -109,6 +117,25 @@ fun MainUi(onTextChanged: (String) -> Unit) {
                             )
                         )
                 )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .weight(1f) // Use weight to distribute the remaining space
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    repeat(10) {
+                        Text("Item $it", modifier = Modifier.padding(30.dp))
+                    }
+                }
+
+                Image(
+                    painter = addBtn,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .combinedClickable( onClick = { onImageClick() } )
+                )
             }
         }
     }
@@ -118,6 +145,9 @@ fun MainUi(onTextChanged: (String) -> Unit) {
 @Composable
 fun MainPreview() {
     WPJ_KotlinTheme {
-        MainUi { text -> }
+        MainUi(
+            onTextChanged = {},
+            onImageClick = {}
+        )
     }
 }
