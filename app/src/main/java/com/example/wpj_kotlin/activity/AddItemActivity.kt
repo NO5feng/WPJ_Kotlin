@@ -17,12 +17,9 @@ class AddItemActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WPJ_KotlinTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AddItemUI(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AddItemUI(
+
+                )
             }
         }
     }
