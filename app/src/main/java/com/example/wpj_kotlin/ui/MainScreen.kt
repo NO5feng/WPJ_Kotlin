@@ -96,13 +96,13 @@ fun MainUi(onTextChanged: (String) -> Unit, onImageClick: () -> Unit) {
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedContainerColor = Color(backgroundColor),
                         unfocusedContainerColor = Color(backgroundColor),
-                        focusedLabelColor = Color.Black,
-                        unfocusedLabelColor = Color.Black,
                         cursorColor = Color(cursor),
                         focusedLeadingIconColor = Color.Black,
-                        unfocusedLeadingIconColor = Color.Black
+                        unfocusedLeadingIconColor = Color.Black,
+                        focusedPlaceholderColor = Color.Black,
+                        unfocusedPlaceholderColor = Color.Black
                     ),
-                    label = { Text(text = editText) },
+                    placeholder = { Text(text = editText) },
                     singleLine = true, // 使输入框为单行
                     leadingIcon = {
                         Icon(imageVector = Icons.Filled.Search, contentDescription = null)
