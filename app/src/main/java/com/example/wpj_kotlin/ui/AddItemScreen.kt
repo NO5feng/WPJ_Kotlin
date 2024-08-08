@@ -48,7 +48,7 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 @Composable
 fun AddItemUI(
     onCancelClick: () -> Unit, onSaveClick: () -> Unit, onTextChanged: (String) -> Unit,
-    onSwitch: (Boolean) -> Unit, onManufactureDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
+    onSwitch: (Boolean) -> Unit, onBirthDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
     onAddImageClick: () -> Unit
     ) {
     val context = LocalContext.current
@@ -158,7 +158,7 @@ fun AddItemUI(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .combinedClickable( onClick = { onManufactureDateClick() } )
+                        .combinedClickable( onClick = { onBirthDateClick() } )
                 ) {
                     Text(
                         text = manufactureDateTitle,
@@ -288,7 +288,7 @@ fun GreetingPreview() {
             onCancelClick = {},
             onSaveClick = {},
             onTextChanged = {},
-            onManufactureDateClick = {},
+            onBirthDateClick = {},
             onExpiredDateClick = {},
             onSwitch = {},
             onAddImageClick = {}
