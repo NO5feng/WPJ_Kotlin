@@ -48,7 +48,8 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 @Composable
 fun AddItemUI(
     onCancelClick: () -> Unit, onSaveClick: () -> Unit, onTextChanged: (String) -> Unit,
-    onSwitch: (Boolean) -> Unit
+    onSwitch: (Boolean) -> Unit, onManufactureDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
+    onAddImageClick: () -> Unit
     ) {
     val context = LocalContext.current
     val yellow = ContextCompat.getColor(context, R.color.yellow)
@@ -124,7 +125,7 @@ fun AddItemUI(
                         innerTextField()
                     }
                     Divider(
-                        color = Color.Black,
+                        color = Color(grey),
                         thickness = 1.dp)
                 }
             },
@@ -134,6 +135,7 @@ fun AddItemUI(
         )
 
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .height(200.dp)
                 .width(320.dp)
@@ -146,7 +148,57 @@ fun AddItemUI(
                 )
                 .background(Color(yellow))
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .combinedClickable( onClick = { onManufactureDateClick() } )
+                ) {
+                    Text(
+                        text = manufactureDateTitle,
+                        color = Color(grey),
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                    )
+                    Text(
+                        text = "2024-08-08",
+                        color = Color(grey),
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                    )
+                }
+                Divider(
+                    color = Color(white),
+                    thickness = 1.dp)
 
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .combinedClickable( onClick = { onExpiredDateClick() } )
+                ) {
+                    Text(
+                        text = expiredDateTitle,
+                        color = Color(grey),
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                    )
+                    Text(
+                        text = "2024-12-08",
+                        color = Color(grey),
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                    )
+                }
+            }
         }
 
         Box(
@@ -165,9 +217,10 @@ fun AddItemUI(
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .padding(start = 20.dp, end = 20.dp)
             ) {
                 Text(text = remindTitle, fontSize = 18.sp, color = Color(grey))
                 Switch(
@@ -185,7 +238,6 @@ fun AddItemUI(
                     ),
                     modifier = Modifier
                         .height(40.dp)
-                        .padding(bottom = 15.dp)
                 )
             }
         }
@@ -202,6 +254,7 @@ fun AddItemUI(
                     )
                 )
                 .background(Color(yellow))
+                .combinedClickable( onClick = { onAddImageClick() } )
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -235,7 +288,10 @@ fun GreetingPreview() {
             onCancelClick = {},
             onSaveClick = {},
             onTextChanged = {},
-            onSwitch = {}
+            onManufactureDateClick = {},
+            onExpiredDateClick = {},
+            onSwitch = {},
+            onAddImageClick = {}
         )
     }
 }

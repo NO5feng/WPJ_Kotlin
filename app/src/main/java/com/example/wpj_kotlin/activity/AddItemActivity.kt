@@ -17,7 +17,10 @@ class AddItemActivity : ComponentActivity() {
                     onCancelClick = { onBackPressed() },
                     onSaveClick = {},
                     onTextChanged = {},
-                    onSwitch = {}
+                    onManufactureDateClick = {},
+                    onExpiredDateClick = {},
+                    onSwitch = {},
+                    onAddImageClick = {}
                 )
             }
         }
