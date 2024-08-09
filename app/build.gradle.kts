@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.wpj_kotlin"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -60,7 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material3:material3:1.3.0-beta04")
-    implementation("com.chargemap.compose:number picker:latestVersion")
+    implementation("com.github.zj565061763:compose-wheel-picker:1.0.0-beta05")
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
