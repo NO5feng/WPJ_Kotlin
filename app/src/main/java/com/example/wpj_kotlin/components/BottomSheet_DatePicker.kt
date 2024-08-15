@@ -1,4 +1,7 @@
-package com.example.wpj_kotlin.ui
+package com.example.wpj_kotlin.components
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -9,10 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,22 +31,38 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
-import com.sd.lib.compose.wheel_picker.FVerticalWheelPicker
+import com.example.wpj_kotlin.utils.DateTimeUtils
 
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BrithDatePickerDialog(
     onConfirm: (String) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    initDate: String
 ) {
     val context = LocalContext.current
     val pink = ContextCompat.getColor(context, R.color.pink)
-    val grey = ContextCompat.getColor(context, R.color.grey)
     val white = ContextCompat.getColor(context, R.color.milk_white)
 
     val title = context.getString(R.string.dialog_datePick_title)
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
+    val date = DateTimeUtils.DisassembleDateFormat(initDate)
+    var year = remember { mutableStateOf(date.first).value }
+    var month = remember { mutableStateOf(date.second).value }
+    var day = remember { mutableStateOf(date.third).value }
+    val yearSelectorState = rememberLazyListState(
+        initialFirstVisibleItemIndex = DateTimeUtils.getYearsList().indexOf(year.toString())
+    )
+    val monthSelectorState = rememberLazyListState(
+        initialFirstVisibleItemIndex = DateTimeUtils.getMonthsList().indexOf(month.toString())
+    )
+    val daySelectorState = rememberLazyListState(
+        initialFirstVisibleItemIndex =
+            DateTimeUtils.getDaysList(year, month).indexOf(day.toString())
+    )
 
     Dialog(
         onDismissRequest = onCancel,
@@ -52,7 +74,7 @@ fun BrithDatePickerDialog(
             modifier = Modifier
                 .height(250.dp)
                 .width(500.dp)
-                .padding(start = 30.dp, end = 30.dp)
+                .padding(start = 25.dp, end = 25.dp)
                 .clip(
                     RoundedCornerShape(
                         topStart = 15.dp, topEnd = 15.dp,
@@ -79,23 +101,42 @@ fun BrithDatePickerDialog(
                     text = saveBtn,
                     color = Color(pink),
                     modifier = Modifier
-                        .combinedClickable( onClick = { onCancel() } )
+                        .combinedClickable( onClick = {
+                            onConfirm(DateTimeUtils.formatDate(year, month, day))
+                        } )
                 )
             }
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                FVerticalWheelPicker(
-                    modifier = Modifier.width(60.dp),
-                    // Specified item count.
-                    count = 50,
-                ) { index ->
-                    Text(index.toString())
-                }
+
+                ScrollSelector(
+                    items = DateTimeUtils.getYearsList(),
+                    state = yearSelectorState,
+                    onItemSelected = { _, y -> year = y.toInt() },
+                    selectedColor = Color(pink),
+                    modifier = Modifier
+                        .padding(start = 25.dp)
+                )
+                Text(text = "年")
+                ScrollSelector(
+                    items = DateTimeUtils.getMonthsList(),
+                    state = monthSelectorState,
+                    selectedColor = Color(pink),
+                    onItemSelected = { _, m -> month = m.toInt() },
+                )
+                Text(text = "月")
+                ScrollSelector(
+                    items = DateTimeUtils.getDaysList(year, month),
+                    state = daySelectorState,
+                    selectedColor = Color(pink),
+                    onItemSelected = { _, d -> day = d.toInt() },
+                )
+                Text(text = "日", modifier = Modifier.padding(end = 25.dp))
             }
         }
     }
@@ -163,7 +204,6 @@ fun ExpiredDatePickerDialog(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-
 
             }
         }
@@ -239,13 +279,15 @@ fun RemindPickerDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
         BrithDatePickerDialog(
             onConfirm = {},
-            onCancel = {}
+            onCancel = {},
+            initDate = "2024-8-15"
         )
     }
 }

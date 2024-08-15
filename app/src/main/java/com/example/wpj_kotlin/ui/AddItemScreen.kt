@@ -47,9 +47,13 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddItemUI(
+    // 回调方法
     onCancelClick: () -> Unit, onSaveClick: () -> Unit, onTextChanged: (String) -> Unit,
     onSwitch: (Boolean) -> Unit, onBirthDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
-    onAddImageClick: () -> Unit
+    onAddImageClick: () -> Unit,
+
+    // 传值
+    manufactureDateTextValue: String
     ) {
     val context = LocalContext.current
     val yellow = ContextCompat.getColor(context, R.color.yellow)
@@ -111,13 +115,13 @@ fun AddItemUI(
             },
             singleLine = true,
             textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
-            cursorBrush = SolidColor(Color(pink)), // 替换 pink 为你需要的颜色
+            cursorBrush = SolidColor(Color(pink)),
             decorationBox = { innerTextField ->
                 Column {
                     Box(
                         modifier = Modifier
                             .background(Color.Transparent)
-                            .padding(start = 15.dp, bottom = 5.dp) // 自定义padding以调整距离
+                            .padding(start = 15.dp, bottom = 5.dp)
                     ) {
                         if (currentText.value.text.isEmpty()) {
                             Text(text = editTitle, fontSize = 18.sp, color = Color(grey))
@@ -167,7 +171,7 @@ fun AddItemUI(
                             .padding(start = 20.dp)
                     )
                     Text(
-                        text = "2024-08-08",
+                        text = manufactureDateTextValue,
                         color = Color(grey),
                         modifier = Modifier
                             .padding(end = 20.dp)
@@ -291,7 +295,8 @@ fun GreetingPreview() {
             onBirthDateClick = {},
             onExpiredDateClick = {},
             onSwitch = {},
-            onAddImageClick = {}
+            onAddImageClick = {},
+            manufactureDateTextValue = "2024-08-08"
         )
     }
 }
