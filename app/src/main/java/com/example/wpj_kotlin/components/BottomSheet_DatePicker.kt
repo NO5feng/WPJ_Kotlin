@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +38,7 @@ import com.example.wpj_kotlin.utils.DateTimeUtils
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BrithDatePickerDialog(
+fun BirthDatePickerDialog(
     onConfirm: (String) -> Unit,
     onCancel: () -> Unit,
     initDate: String
@@ -50,9 +51,9 @@ fun BrithDatePickerDialog(
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
     val date = DateTimeUtils.DisassembleDateFormat(initDate)
-    var year = remember { mutableStateOf(date.first).value }
-    var month = remember { mutableStateOf(date.second).value }
-    var day = remember { mutableStateOf(date.third).value }
+    var year = remember { mutableIntStateOf(date.first).intValue }
+    var month = remember { mutableIntStateOf(date.second).intValue }
+    var day = remember { mutableIntStateOf(date.third).intValue }
     val yearSelectorState = rememberLazyListState(
         initialFirstVisibleItemIndex = DateTimeUtils.getYearsList().indexOf(year.toString())
     )
@@ -284,7 +285,7 @@ fun RemindPickerDialog(
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
-        BrithDatePickerDialog(
+        BirthDatePickerDialog(
             onConfirm = {},
             onCancel = {},
             initDate = "2024-8-15"

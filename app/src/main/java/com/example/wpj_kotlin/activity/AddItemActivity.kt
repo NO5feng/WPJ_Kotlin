@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
-import com.example.wpj_kotlin.components.BrithDatePickerDialog
+import com.example.wpj_kotlin.components.BirthDatePickerDialog
 import com.example.wpj_kotlin.ui.AddItemUI
 import com.example.wpj_kotlin.utils.DateTimeUtils
 
@@ -37,11 +37,11 @@ class AddItemActivity : ComponentActivity() {
                 )
 
                 if (showBirthDialog.value) {
-                    BrithDatePickerDialog(
+                    BirthDatePickerDialog(
                         onConfirm = { date ->
                             showBirthDialog.value = false
                             selectedBirthDate.value = date
-                            Log.d("DateUtils", "Formatted date: $date")
+                            Log.d("BirthDatePicker_log", "date: $date")
                         },
                         onCancel = {
                             showBirthDialog.value = false
