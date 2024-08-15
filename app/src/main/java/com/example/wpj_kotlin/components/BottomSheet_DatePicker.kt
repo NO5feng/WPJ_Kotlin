@@ -17,9 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,9 +53,12 @@ fun BirthDatePickerDialog(
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
     val date = DateTimeUtils.DisassembleDateFormat(initDate)
-    var year = remember { mutableIntStateOf(date.first).intValue }
-    var month = remember { mutableIntStateOf(date.second).intValue }
-    var day = remember { mutableIntStateOf(date.third).intValue }
+    var year by remember { mutableIntStateOf(date.first) }
+    var month by remember { mutableIntStateOf(date.second) }
+    var day by remember { mutableIntStateOf(date.third) }
+    val dayList by remember(year, month) {
+        derivedStateOf { DateTimeUtils.getDaysList(year, month) }
+    }
     val yearSelectorState = rememberLazyListState(
         initialFirstVisibleItemIndex = DateTimeUtils.getYearsList().indexOf(year.toString())
     )
@@ -114,7 +119,6 @@ fun BirthDatePickerDialog(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-
                 ScrollSelector(
                     items = DateTimeUtils.getYearsList(),
                     state = yearSelectorState,
@@ -132,7 +136,7 @@ fun BirthDatePickerDialog(
                 )
                 Text(text = "月")
                 ScrollSelector(
-                    items = DateTimeUtils.getDaysList(year, month),
+                    items = dayList,
                     state = daySelectorState,
                     selectedColor = Color(pink),
                     onItemSelected = { _, d -> day = d.toInt() },
