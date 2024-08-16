@@ -155,7 +155,6 @@ fun ExpiredDatePickerDialog(
 ) {
     val context = LocalContext.current
     val pink = ContextCompat.getColor(context, R.color.pink)
-    val grey = ContextCompat.getColor(context, R.color.grey)
     val white = ContextCompat.getColor(context, R.color.milk_white)
 
     val title = context.getString(R.string.dialog_timeout_title)
@@ -203,12 +202,22 @@ fun ExpiredDatePickerDialog(
                 )
             }
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
+                ScrollSelector(
+                    items = DateTimeUtils.getMonthsList(),
+                    onItemSelected = { _, y ->  },
+                    selectedColor = Color(pink),
+                )
+                ScrollSelector(
+                    items = DateTimeUtils.getChineseYearMonthAndDayList(),
+                    onItemSelected = { _, y ->  },
+                    selectedColor = Color(pink),
+                )
 
             }
         }
@@ -223,7 +232,6 @@ fun RemindPickerDialog(
 ) {
     val context = LocalContext.current
     val pink = ContextCompat.getColor(context, R.color.pink)
-    val grey = ContextCompat.getColor(context, R.color.grey)
     val white = ContextCompat.getColor(context, R.color.milk_white)
 
     val title = context.getString(R.string.dialog_remind_title)
@@ -277,7 +285,12 @@ fun RemindPickerDialog(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-
+                ScrollSelector(
+                    items = DateTimeUtils.getRemindList(),
+                    onItemSelected = { _, y ->  },
+                    selectedColor = Color(pink),
+                    isMaxWidth = true
+                )
 
             }
         }
@@ -289,10 +302,9 @@ fun RemindPickerDialog(
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
-        BirthDatePickerDialog(
+        RemindPickerDialog(
             onConfirm = {},
-            onCancel = {},
-            initDate = "2024-8-15"
+            onCancel = {}
         )
     }
 }

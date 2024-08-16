@@ -296,7 +296,8 @@ fun GreetingPreview() {
             onExpiredDateClick = {},
             onSwitch = {},
             onAddImageClick = {},
-            manufactureDateTextValue = "2024-08-08"
+            manufactureDateTextValue = "2024-08-08",
+//            switchState = false
         )
     }
 }

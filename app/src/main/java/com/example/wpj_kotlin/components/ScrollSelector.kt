@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,7 +53,9 @@ fun ScrollSelector(
     selectedScale: Float = 1.25F,
     padding: PaddingValues = PaddingValues(top = 14.dp, bottom = 14.dp),
     selectedColor: Color = Color.Black,
-    unSelectedColor: Color = Color.Gray
+    unSelectedColor: Color = Color.Gray,
+    // If items is an irregularly sized str, open this, otherwise the elements may be strange.
+    isMaxWidth: Boolean = false
 ) {
     val density = LocalDensity.current
     val currentUnselectedScale by rememberUpdatedState(newValue = unselectedScale)
@@ -145,7 +148,7 @@ fun ScrollSelector(
                 key = { items[it] }
             ) { index ->
                 Box(
-                    modifier = Modifier.defaultMinSize(minWidth = 42.dp),
+                    modifier = if (isMaxWidth) Modifier.fillMaxWidth() else Modifier.defaultMinSize(minWidth = 42.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
