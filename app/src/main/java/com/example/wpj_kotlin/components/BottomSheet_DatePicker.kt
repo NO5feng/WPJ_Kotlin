@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,7 +53,7 @@ fun BirthDatePickerDialog(
     val title = context.getString(R.string.dialog_datePick_title)
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
-    val date = DateTimeUtils.DisassembleDateFormat(initDate)
+    val date = DateTimeUtils.disassembleDateFormat(initDate)
     var year by remember { mutableIntStateOf(date.first) }
     var month by remember { mutableIntStateOf(date.second) }
     var day by remember { mutableIntStateOf(date.third) }
@@ -161,6 +162,9 @@ fun ExpiredDatePickerDialog(
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
 
+    var num by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+
     Dialog(
         onDismissRequest = onCancel,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -198,7 +202,7 @@ fun ExpiredDatePickerDialog(
                     text = saveBtn,
                     color = Color(pink),
                     modifier = Modifier
-                        .combinedClickable( onClick = { onCancel() } )
+                        .combinedClickable( onClick = { onConfirm( num + type ) } )
                 )
             }
             Row(
@@ -210,12 +214,12 @@ fun ExpiredDatePickerDialog(
             ) {
                 ScrollSelector(
                     items = DateTimeUtils.getMonthsList(),
-                    onItemSelected = { _, y ->  },
+                    onItemSelected = { _, i -> num = i },
                     selectedColor = Color(pink),
                 )
                 ScrollSelector(
                     items = DateTimeUtils.getChineseYearMonthAndDayList(),
-                    onItemSelected = { _, y ->  },
+                    onItemSelected = { _, t -> type = t },
                     selectedColor = Color(pink),
                 )
 
@@ -275,7 +279,7 @@ fun RemindPickerDialog(
                     text = saveBtn,
                     color = Color(pink),
                     modifier = Modifier
-                        .combinedClickable( onClick = { onCancel() } )
+                        .combinedClickable( onClick = { onConfirm("") } )
                 )
             }
             Row(
@@ -302,7 +306,7 @@ fun RemindPickerDialog(
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
-        RemindPickerDialog(
+        ExpiredDatePickerDialog(
             onConfirm = {},
             onCancel = {}
         )

@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.YearMonth
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.concurrent.getOrSet
 
@@ -49,14 +50,19 @@ object DateTimeUtils {
         return "$year-$monthStr-$dayStr"
     }
 
-    fun getCurrentDateTime(): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val currentDate = Calendar.getInstance().time
-        return sdf.format(currentDate)
+    @SuppressLint("SimpleDateFormat")
+    fun getCurrentTime(isFormat: Boolean = true): String {
+        val currentDate = Date()
+        if (isFormat) {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            return dateFormat.format(currentDate)
+        } else {
+            return currentDate.time.toString()
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun DisassembleDateFormat(dateString: String): Triple<Int, Int, Int> {
+    fun disassembleDateFormat(dateString: String): Triple<Int, Int, Int> {
         val format = SimpleDateFormat("yyyy-MM-dd")
         val date = format.parse(dateString)
         val calendar = Calendar.getInstance()
@@ -65,16 +71,53 @@ object DateTimeUtils {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-
         return Triple(year, month, day)
+    }
 
+    fun getExpiredDate(birthDate: Long, delayed: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val originalDate = Date(birthDate * 1000)
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDate
+
+        val pattern = "(\\d+)([年月日])".toRegex()
+        val matchResult = pattern.find(delayed)
+
+        if (matchResult != null) {
+            val (numberStr, unit) = matchResult.destructured
+            val number = numberStr.toInt()
+
+            when (unit) {
+                "年" -> calendar.add(Calendar.YEAR, number)
+                "月" -> calendar.add(Calendar.MONTH, number)
+                "日" -> calendar.add(Calendar.DAY_OF_YEAR, number)
+                else -> return "Invalid unit"
+            }
+
+            return dateFormat.format(calendar.time)
+        } else {
+            return "Invalid input format"
+        }
+    }
+
+}
+
+@SuppressLint("SimpleDateFormat")
+fun String.switchTimesTamp(): Long {
+    val format = SimpleDateFormat("yyyy-MM-dd")
+    try {
+        val date = format.parse(this)
+        return date.time / 1000
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return -1
     }
 }
 
-/** ---------------Calendar获取年月日----------------*/
-inline fun Calendar.getDate() = this.get(Calendar.DATE)
-inline fun Calendar.setDate(date: Int) = this.set(Calendar.DATE, date)
-inline fun Calendar.getMonth() = this.get(Calendar.MONTH) + 1
-inline fun Calendar.setMonth(month: Int) = this.set(Calendar.MONTH, month - 1)
-inline fun Calendar.getYear() = this.get(Calendar.YEAR)
-inline fun Calendar.setYear(year: Int) = this.set(Calendar.YEAR, year)
+@SuppressLint("SimpleDateFormat")
+fun Long.switchStandardDate(): String {
+    val date = Date(this * 1000)
+    val format = SimpleDateFormat("yyyy-MM-dd")
+    return format.format(date)
+}
+

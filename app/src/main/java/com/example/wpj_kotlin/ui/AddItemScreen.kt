@@ -53,7 +53,7 @@ fun AddItemUI(
     onAddImageClick: () -> Unit,
 
     // 传值
-    manufactureDateTextValue: String
+    manufactureDateTextValue: String, expiredDateTextValue: String, switchState: Boolean
     ) {
     val context = LocalContext.current
     val yellow = ContextCompat.getColor(context, R.color.yellow)
@@ -67,10 +67,8 @@ fun AddItemUI(
     val remindTitle = context.getString(R.string.add_remind)
     val addImageTitle = context.getString(R.string.add_src_input)
     val image = painterResource(id = R.drawable.image)
-
     val height = Rect().top + 20
     val currentText = remember { mutableStateOf(TextFieldValue()) }
-    val switchState = remember { mutableStateOf(false) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -196,7 +194,7 @@ fun AddItemUI(
                             .padding(start = 20.dp)
                     )
                     Text(
-                        text = "2024-12-08",
+                        text = expiredDateTextValue,
                         color = Color(grey),
                         modifier = Modifier
                             .padding(end = 20.dp)
@@ -228,10 +226,9 @@ fun AddItemUI(
             ) {
                 Text(text = remindTitle, fontSize = 18.sp, color = Color(grey))
                 Switch(
-                    checked = switchState.value,
+                    checked = switchState,
                     onCheckedChange = { isChecked ->
-                        switchState.value = isChecked
-                        onSwitch(switchState.value)
+                        onSwitch(isChecked)
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -297,7 +294,8 @@ fun GreetingPreview() {
             onSwitch = {},
             onAddImageClick = {},
             manufactureDateTextValue = "2024-08-08",
-//            switchState = false
+            expiredDateTextValue = "2024-09-08",
+            switchState = false
         )
     }
 }
