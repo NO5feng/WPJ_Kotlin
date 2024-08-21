@@ -3,6 +3,7 @@ package com.example.wpj_kotlin.activity
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.components.BirthDatePickerDialog
 import com.example.wpj_kotlin.components.ExpiredDatePickerDialog
@@ -42,7 +44,9 @@ class AddItemActivity : ComponentActivity() {
                     onSwitch = { check ->
                         viewModel.updateCheck(check)
                         if (check) { showRemindDialog.value = true }},
-                    onAddImageClick = {},
+                    onAddImageClick = {
+                        Toast.makeText(this, getText(R.string.add_image_remind), Toast.LENGTH_SHORT).show()
+                    },
                     manufactureDateTextValue = selectedBirthDate,
                     expiredDateTextValue = selectedExpiredDate,
                     switchState = switchState
@@ -72,8 +76,9 @@ class AddItemActivity : ComponentActivity() {
 
                 if (showRemindDialog.value) {
                     RemindPickerDialog(
-                        onConfirm = { date ->
+                        onConfirm = { type ->
                             viewModel.updateCheck(true)
+                            viewModel.updateRemindDate(DateTimeUtils.getRemindDate(selectedBirthDate.switchTimesTamp(), type))
                             showRemindDialog.value = false
                         },
                         onCancel = {

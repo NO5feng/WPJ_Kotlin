@@ -1,5 +1,6 @@
 package com.example.wpj_kotlin.ui
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -43,7 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
+import com.example.wpj_kotlin.utils.Debounce
 
+@SuppressLint("RememberReturnType")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddItemUI(
@@ -69,6 +72,7 @@ fun AddItemUI(
     val image = painterResource(id = R.drawable.image)
     val height = Rect().top + 20
     val currentText = remember { mutableStateOf(TextFieldValue()) }
+    val debouncedClick = remember { onAddImageClick.Debounce() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -255,7 +259,7 @@ fun AddItemUI(
                     )
                 )
                 .background(Color(yellow))
-                .combinedClickable( onClick = { onAddImageClick() } )
+                .combinedClickable( onClick = { debouncedClick() } )
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,

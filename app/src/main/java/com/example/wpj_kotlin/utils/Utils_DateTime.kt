@@ -100,6 +100,20 @@ object DateTimeUtils {
         }
     }
 
+    fun getRemindDate(date: Long, type: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val originalDate = Date(date * 1000)
+        val calendar = Calendar.getInstance()
+        calendar.time = originalDate
+        when (type) {
+            "当天" -> calendar.add(Calendar.YEAR, 0)
+            "提前一天" -> calendar.add(Calendar.DAY_OF_YEAR, -1)
+            "提前两天" -> calendar.add(Calendar.DAY_OF_YEAR, -2)
+            "提前一周" -> calendar.add(Calendar.DAY_OF_YEAR, -7)
+            "提前一个月" -> calendar.add(Calendar.DAY_OF_YEAR, -30)
+        }
+        return dateFormat.format(calendar.time)
+    }
 }
 
 @SuppressLint("SimpleDateFormat")

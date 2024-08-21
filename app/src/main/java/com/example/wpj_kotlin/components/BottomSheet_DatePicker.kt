@@ -162,8 +162,8 @@ fun ExpiredDatePickerDialog(
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
 
-    var num by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
+    var num by remember { mutableStateOf("1") }
+    var type by remember { mutableStateOf("年") }
 
     Dialog(
         onDismissRequest = onCancel,
@@ -241,6 +241,7 @@ fun RemindPickerDialog(
     val title = context.getString(R.string.dialog_remind_title)
     val cancelBtn = context.getString(R.string.dialog_noSave_btn)
     val saveBtn = context.getString(R.string.dialog_Save_btn)
+    var type by remember { mutableStateOf("当天") }
 
     Dialog(
         onDismissRequest = onCancel,
@@ -279,7 +280,7 @@ fun RemindPickerDialog(
                     text = saveBtn,
                     color = Color(pink),
                     modifier = Modifier
-                        .combinedClickable( onClick = { onConfirm("") } )
+                        .combinedClickable( onClick = { onConfirm(type) } )
                 )
             }
             Row(
@@ -291,7 +292,7 @@ fun RemindPickerDialog(
             ) {
                 ScrollSelector(
                     items = DateTimeUtils.getRemindList(),
-                    onItemSelected = { _, y ->  },
+                    onItemSelected = { _, t -> type = t },
                     selectedColor = Color(pink),
                     isMaxWidth = true
                 )
@@ -306,7 +307,7 @@ fun RemindPickerDialog(
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
-        ExpiredDatePickerDialog(
+        RemindPickerDialog(
             onConfirm = {},
             onCancel = {}
         )
