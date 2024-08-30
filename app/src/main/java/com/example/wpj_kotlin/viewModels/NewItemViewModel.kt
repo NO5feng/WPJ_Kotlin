@@ -1,12 +1,18 @@
 package com.example.wpj_kotlin.viewModels
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.wpj_kotlin.database.ItemRoomDatabase
+import com.example.wpj_kotlin.database.database_item.Item
+import com.example.wpj_kotlin.database.database_item.ItemDao
 import com.example.wpj_kotlin.utils.DateTimeUtils
 import com.example.wpj_kotlin.utils.switchTimesTamp
+import kotlinx.coroutines.launch
 
-class NewItemViewModel: ViewModel() {
+class NewItemViewModel(application: Application) : AndroidViewModel(application) {
     private val _itemName = mutableStateOf(DateTimeUtils.getCurrentTime())
     val itemName: State<String> = _itemName
 
@@ -44,4 +50,17 @@ class NewItemViewModel: ViewModel() {
 
     }
 
+    // 操作数据库
+    private val itemDao: ItemDao = ItemRoomDatabase.getDatabase(application).itemDao()
+    fun insertItem(item: Item) {
+        viewModelScope.launch {
+            itemDao.insertItem(item)
+        }
+    }
+
+    fun getAllItem() {
+        viewModelScope.launch {
+            itemDao.getAllItems()
+        }
+    }
 }

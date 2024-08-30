@@ -42,7 +42,9 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MainUi(onTextChanged: (String) -> Unit, onImageClick: () -> Unit) {
+fun MainUi(
+    onTextChanged: (String) -> Unit, onImageClick: () -> Unit
+) {
     val context = LocalContext.current
     val backgroundColor = ContextCompat.getColor(context, R.color.yellow)
     val subBackgroundColor = ContextCompat.getColor(context, R.color.milk_white)
@@ -124,6 +126,8 @@ fun MainUi(onTextChanged: (String) -> Unit, onImageClick: () -> Unit) {
                         .weight(1f) // Use weight to distribute the remaining space
                         .verticalScroll(rememberScrollState())
                 ) {
+
+//                    Text(text123, modifier = Modifier.padding(30.dp))
                     repeat(10) {
                         Text("Item $it", modifier = Modifier.padding(30.dp))
                     }

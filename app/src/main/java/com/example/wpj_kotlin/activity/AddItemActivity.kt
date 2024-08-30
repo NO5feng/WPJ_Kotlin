@@ -2,13 +2,12 @@ package com.example.wpj_kotlin.activity
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.wpj_kotlin.R
@@ -16,13 +15,17 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.components.BirthDatePickerDialog
 import com.example.wpj_kotlin.components.ExpiredDatePickerDialog
 import com.example.wpj_kotlin.components.RemindPickerDialog
+import com.example.wpj_kotlin.database.NewItemViewModelFactory
+import com.example.wpj_kotlin.database.database_item.Item
 import com.example.wpj_kotlin.ui.AddItemUI
 import com.example.wpj_kotlin.utils.DateTimeUtils
 import com.example.wpj_kotlin.utils.switchTimesTamp
 import com.example.wpj_kotlin.viewModels.NewItemViewModel
 
 class AddItemActivity : ComponentActivity() {
-    private val viewModel: NewItemViewModel by viewModels()
+    private val viewModel: NewItemViewModel by viewModels {
+        NewItemViewModelFactory(application)
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,17 @@ class AddItemActivity : ComponentActivity() {
                 val switchState = viewModel.switchState.value
                 AddItemUI(
                     onCancelClick = { onBackPressed() },
-                    onSaveClick = {},
+                    onSaveClick = {
+                        val newItem = Item(
+                            itemName = viewModel.itemName.value,
+                            birthDate = selectedBirthDate,
+                            expiredDate = selectedExpiredDate,
+                            remindDate = if (switchState) viewModel.remindDate.value else null
+                        )
+                        viewModel.insertItem(newItem)
+                        onBackPressed()
+                        Toast.makeText(this, getText(R.string.toast_add_item_success), Toast.LENGTH_SHORT).show()
+                    },
                     onTextChanged = { name -> viewModel.updateItemName(name) },
                     onBirthDateClick = { showBirthDialog.value = true },
                     onExpiredDateClick = { showExpiredDialog.value = true },

@@ -113,7 +113,7 @@ fun AddItemUI(
             value = currentText.value,
             onValueChange = {
                 currentText.value = it
-                onTextChanged(it.toString())
+                onTextChanged(it.text)
             },
             singleLine = true,
             textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
