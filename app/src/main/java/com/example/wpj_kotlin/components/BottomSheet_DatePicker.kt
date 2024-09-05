@@ -148,7 +148,7 @@ fun BirthDatePickerDialog(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExpiredDatePickerDialog(
     onConfirm: (String) -> Unit,
@@ -228,7 +228,7 @@ fun ExpiredDatePickerDialog(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RemindPickerDialog(
     onConfirm: (String) -> Unit,

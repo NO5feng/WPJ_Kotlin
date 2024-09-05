@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
+import com.example.wpj_kotlin.components.ItemCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -126,7 +127,8 @@ fun MainUi(
                         .weight(1f) // Use weight to distribute the remaining space
                         .verticalScroll(rememberScrollState())
                 ) {
-
+                    ItemCard()
+                    ItemCard()
 //                    Text(text123, modifier = Modifier.padding(30.dp))
                     repeat(10) {
                         Text("Item $it", modifier = Modifier.padding(30.dp))
