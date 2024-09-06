@@ -58,9 +58,10 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getAllItem() {
+    fun getAllItem(onResult: (List<Item>) -> Unit) {
         viewModelScope.launch {
-            itemDao.getAllItems()
+            val items = itemDao.getAllItems()  // 从数据库获取数据
+            onResult(items)  // 将获取到的结果传递出去
         }
     }
 }

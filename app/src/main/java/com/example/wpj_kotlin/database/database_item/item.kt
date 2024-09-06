@@ -11,3 +11,9 @@ data class Item(
     val remindDate: String? = null,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 )
+
+data class ItemCard(
+    val itemName: String,
+    val type: Int? = 1,
+    val day: String
+)

@@ -29,14 +29,18 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
+import com.example.wpj_kotlin.database.database_item.ItemCard
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
-fun ItemCard() {
+fun ItemCard(itemCard: ItemCard) {
     val context = LocalContext.current
     val pink = ContextCompat.getColor(context, R.color.pink)
     val yellow = ContextCompat.getColor(context, R.color.yellow)
+    val color = if (itemCard.type == 1) pink else yellow
+    val topText = if (itemCard.type == 1) itemCard.day else context.getString(R.string.overdue)
+    val bottomText = if (itemCard.type == 1) context.getString(R.string.day) else itemCard.day + context.getString(R.string.day)
 
     val archive = SwipeAction(
         icon = rememberVectorPainter(Icons.Filled.Create),
@@ -85,7 +89,7 @@ fun ItemCard() {
                             .fillMaxHeight()
                     ) {
                         Text(
-                            text = "芝麻油",
+                            text = itemCard.itemName,
                             modifier = Modifier
                                 .padding(start = 20.dp)
                         )
@@ -97,14 +101,14 @@ fun ItemCard() {
                         modifier = Modifier
                             .weight(0.3f)
                             .fillMaxHeight()
-                            .background(Color(pink))
+                            .background(Color(color))
                     ) {
                         Text(
-                            text = "164",
+                            text = topText,
                             modifier = Modifier
                                 .padding(top = 5.dp)
                         )
-                        Text(text = "天")
+                        Text(text = bottomText)
                     }
                 }
             }
@@ -117,6 +121,7 @@ fun ItemCard() {
 @Composable
 fun xxx() {
     WPJ_KotlinTheme {
-        ItemCard()
+        val x = ItemCard(itemName = "芝麻油", type = 1, day = "110")
+        ItemCard(x)
     }
 }

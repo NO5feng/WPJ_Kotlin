@@ -40,11 +40,14 @@ import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.components.ItemCard
+import com.example.wpj_kotlin.database.database_item.ItemCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainUi(
-    onTextChanged: (String) -> Unit, onImageClick: () -> Unit
+    onTextChanged: (String) -> Unit, onImageClick: () -> Unit,
+
+    itemCards: List<ItemCard>
 ) {
     val context = LocalContext.current
     val backgroundColor = ContextCompat.getColor(context, R.color.yellow)
@@ -127,11 +130,10 @@ fun MainUi(
                         .weight(1f) // Use weight to distribute the remaining space
                         .verticalScroll(rememberScrollState())
                 ) {
-                    ItemCard()
-                    ItemCard()
-//                    Text(text123, modifier = Modifier.padding(30.dp))
-                    repeat(10) {
-                        Text("Item $it", modifier = Modifier.padding(30.dp))
+                    if (itemCards.isNotEmpty()) {
+                        for (itemCard in itemCards ) {
+                            ItemCard(itemCard = itemCard)
+                        }
                     }
                 }
 
@@ -151,9 +153,14 @@ fun MainUi(
 @Composable
 fun MainPreview() {
     WPJ_KotlinTheme {
+        val sampleItemCards = listOf(
+            ItemCard(itemName = "花花", type = 1, day = "5"),
+            ItemCard(itemName = "鸡蛋", type = 2, day = "10")
+        )
         MainUi(
             onTextChanged = {},
-            onImageClick = {}
+            onImageClick = {},
+            itemCards = sampleItemCards
         )
     }
 }

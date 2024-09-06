@@ -8,10 +8,8 @@ import java.time.YearMonth
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.concurrent.getOrSet
 
 private val threadLocalCalendar = ThreadLocal<Calendar>()
-val calendar = threadLocalCalendar.getOrSet { Calendar.getInstance() }
 object DateTimeUtils {
 
     private val years = listOf(
