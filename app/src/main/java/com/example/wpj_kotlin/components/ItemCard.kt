@@ -49,7 +49,7 @@ fun ItemCard(itemCard: ItemCard) {
     )
     val snooze = SwipeAction(
         icon = rememberVectorPainter(Icons.Filled.Delete),
-        background = Color(pink),
+        background = Color(color),
         isUndo = true,
         onSwipe = { },
     )
