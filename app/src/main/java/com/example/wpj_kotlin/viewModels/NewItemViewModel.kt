@@ -7,10 +7,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wpj_kotlin.database.ItemRoomDatabase
 import com.example.wpj_kotlin.database.database_item.Item
+import com.example.wpj_kotlin.database.database_item.ItemCard
 import com.example.wpj_kotlin.database.database_item.ItemDao
 import com.example.wpj_kotlin.utils.DateTimeUtils
 import com.example.wpj_kotlin.utils.switchTimesTamp
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class NewItemViewModel(application: Application) : AndroidViewModel(application) {
     private val _itemName = mutableStateOf(DateTimeUtils.getCurrentTime())
@@ -28,6 +30,9 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
 
     private val _remindDate = mutableStateOf<String?>(null)
     val remindDate: State<String?> = _remindDate
+
+    private val _itemCards = mutableStateOf<List<ItemCard>>(emptyList())
+    val itemCards: State<List<ItemCard>> = _itemCards
 
     fun updateItemName(newName: String) {
         _itemName.value = newName
@@ -58,10 +63,34 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getAllItem(onResult: (List<Item>) -> Unit) {
+    fun getAllItem() {
         viewModelScope.launch {
-            val items = itemDao.getAllItems()  // 从数据库获取数据
-            onResult(items)  // 将获取到的结果传递出去
+            val items = itemDao.getAllItems()  // 从数据库中获取所有 items
+            _itemCards.value = getItemCards(items)  // 使用你的转换函数
         }
+    }
+
+    fun deleteItemById(id: Int) {
+        viewModelScope.launch {
+            itemDao.deleteItemById(id)
+            getAllItem()
+        }
+    }
+
+    private fun getItemCards(items: List<Item>? = null): List<ItemCard> {
+        val currentTime = DateTimeUtils.getCurrentTime().switchTimesTamp()
+        return items?.groupBy { it.itemName }?.flatMap { (itemName, itemList) ->
+            itemList.map { item ->
+                val expiredTime = item.expiredDate.switchTimesTamp()
+                val type = if (expiredTime >= currentTime) 1 else 2
+                val dayDifference = abs(((expiredTime - currentTime) / (60 * 60 * 24))).toString()
+                ItemCard(
+                    id = item.id,
+                    itemName = itemName,
+                    type = type,
+                    day = dayDifference
+                )
+            }
+        } ?: emptyList()
     }
 }

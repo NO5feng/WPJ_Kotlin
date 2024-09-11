@@ -13,6 +13,7 @@ data class Item(
 )
 
 data class ItemCard(
+    val id: Int,
     val itemName: String,
     val type: Int? = 1,
     val day: String

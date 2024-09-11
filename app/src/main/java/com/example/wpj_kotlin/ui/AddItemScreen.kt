@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
-import com.example.wpj_kotlin.utils.Debounce
+import com.example.wpj_kotlin.utils.deBounce
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalFoundationApi::class)
@@ -72,7 +72,7 @@ fun AddItemUI(
     val image = painterResource(id = R.drawable.image)
     val height = Rect().top + 20
     val currentText = remember { mutableStateOf(TextFieldValue()) }
-    val debouncedClick = remember { onAddImageClick.Debounce() }
+    val debouncedClick = remember { onAddImageClick.deBounce() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

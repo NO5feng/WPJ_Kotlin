@@ -45,8 +45,8 @@ import com.example.wpj_kotlin.database.database_item.ItemCard
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainUi(
-    onTextChanged: (String) -> Unit, onImageClick: () -> Unit,
-
+    onTextChanged: (String) -> Unit, onAddBtnClick: () -> Unit,
+    slideStart: (Int) -> Unit, slideEnd: (Int) -> Unit,
     itemCards: List<ItemCard>
 ) {
     val context = LocalContext.current
@@ -132,7 +132,11 @@ fun MainUi(
                 ) {
                     if (itemCards.isNotEmpty()) {
                         for (itemCard in itemCards ) {
-                            ItemCard(itemCard = itemCard)
+                            ItemCard(
+                                itemCard = itemCard,
+                                slideStart = { i -> slideStart(i) },
+                                slideEnd = { i -> slideEnd(i) },
+                            )
                         }
                     }
                 }
@@ -142,7 +146,7 @@ fun MainUi(
                     contentDescription = null,
                     modifier = Modifier
                         .size(50.dp)
-                        .combinedClickable( onClick = { onImageClick() } )
+                        .combinedClickable( onClick = { onAddBtnClick() } )
                 )
             }
         }
@@ -154,12 +158,14 @@ fun MainUi(
 fun MainPreview() {
     WPJ_KotlinTheme {
         val sampleItemCards = listOf(
-            ItemCard(itemName = "花花", type = 1, day = "5"),
-            ItemCard(itemName = "鸡蛋", type = 2, day = "10")
+            ItemCard(itemName = "花花", type = 1, day = "5", id = 0),
+            ItemCard(itemName = "鸡蛋", type = 2, day = "10", id = 1)
         )
         MainUi(
             onTextChanged = {},
-            onImageClick = {},
+            onAddBtnClick = {},
+            slideStart = {},
+            slideEnd = {},
             itemCards = sampleItemCards
         )
     }
