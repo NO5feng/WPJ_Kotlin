@@ -116,12 +116,7 @@ fun ItemCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = 20.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 15.dp, topEnd = 15.dp,
-                        bottomStart = 15.dp, bottomEnd = 15.dp
-                    )
-                )
+                .clip( RoundedCornerShape(15.dp,15.dp,15.dp,15.dp) )
                 .background(Color.White)
                 .focusable()
                 .clickable {
