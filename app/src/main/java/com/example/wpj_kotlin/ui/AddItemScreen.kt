@@ -50,12 +50,10 @@ import com.example.wpj_kotlin.utils.deBounce
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddItemUI(
-    // 回调方法
     onCancelClick: () -> Unit, onSaveClick: () -> Unit, onTextChanged: (String) -> Unit,
     onSwitch: (Boolean) -> Unit, onBirthDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
     onAddImageClick: () -> Unit,
 
-    // 传值
     manufactureDateTextValue: String, expiredDateTextValue: String, switchState: Boolean
     ) {
     val context = LocalContext.current

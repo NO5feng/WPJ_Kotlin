@@ -30,4 +30,6 @@
     <string name="dialog_Editing_btn">编辑</string>
     <string name="dialog_Delete_btn">删除</string>
     <string name="set_button2">set_button2</string>
+
+    <string name="dialog_delete_content">删除后，无法恢复，考虑清楚哦  :)</string>"
 </resources>

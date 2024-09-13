@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,14 +36,15 @@ import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 @Composable
 fun CommonDialog(
     titleText: String, contentText:String, leftBtnText:String = "取消", rightBtnText:String = "确定",
-    leftBtnContainerColor: Color? = null, rightBtnContainerColor: ButtonColors? = null,
+    leftBtnContainerColor: Color? = null, rightBtnContainerColor: Color? = null,
     leftBtnBorderColor: Color? = null, rightBtnBorderColor: Color? = null,
     onConfirm: () -> Unit, onCancel: () -> Unit, needBlank:Boolean = true
 ) {
     val context = LocalContext.current
     val pink = ContextCompat.getColor(context, R.color.pink)
     val white = ContextCompat.getColor(context, R.color.milk_white)
-    val grey = ContextCompat.getColor(context, R.color.grey2)
+    val grey = ContextCompat.getColor(context, R.color.grey)
+    val grey2 = ContextCompat.getColor(context, R.color.grey2)
     val content = if (needBlank) "    $contentText" else contentText
 
     val leftBtnColor = ButtonDefaults.buttonColors(
@@ -53,7 +52,7 @@ fun CommonDialog(
     )
 
     val rightBtnColor = ButtonDefaults.buttonColors(
-        containerColor = leftBtnContainerColor ?: Color(white)
+        containerColor = rightBtnContainerColor ?: Color(white)
     )
 
     val leftBorderColor = leftBtnBorderColor ?: Color(pink)
@@ -79,9 +78,9 @@ fun CommonDialog(
                 modifier = Modifier
                     .weight(0.2f)
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .padding(top = 15.dp)
             ) {
-                Text(text = titleText, style = MaterialTheme.typography.bodyLarge, fontSize = 23.sp)
+                Text(text = titleText, fontSize = 23.sp, color = Color(grey))
             }
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -96,9 +95,9 @@ fun CommonDialog(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = content, color = Color(grey),
+                        text = content, color = Color(grey2),
                         modifier = Modifier
-                            .padding(start = 20.dp, end = 15.dp, top = 10.dp)
+                            .padding(start = 20.dp, end = 15.dp, top = 30.dp)
                         )
                 }
                 Column(
@@ -150,7 +149,8 @@ fun rtyy() {
             onConfirm = {},
             onCancel = {},
             titleText = "标题",
-            contentText = "内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容？"
+            contentText = "删除后，无法恢复，考虑清楚哦:)",
+            needBlank=false
         )
     }
 }
