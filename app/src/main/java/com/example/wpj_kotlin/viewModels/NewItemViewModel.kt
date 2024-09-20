@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class NewItemViewModel(application: Application) : AndroidViewModel(application) {
-    private val _itemName = mutableStateOf(DateTimeUtils.getCurrentTime())
+    private val _itemName = mutableStateOf("")
     val itemName: State<String> = _itemName
 
     private val _birthDate = mutableStateOf(DateTimeUtils.getCurrentTime())
@@ -63,6 +63,12 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun fixItem(id: Int, item: Item) {
+        viewModelScope.launch {
+            itemDao.fixItemById(id, item.itemName, item.birthDate, item.expiredDate, item.remindDate.toString())
+        }
+    }
+
     fun getAllItem() {
         viewModelScope.launch {
             val items = itemDao.getAllItems()  // 从数据库中获取所有 items
@@ -74,6 +80,17 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             itemDao.deleteItemById(id)
             getAllItem()
+        }
+    }
+
+    fun reviseDataById(id: Int) {
+        viewModelScope.launch {
+            val newDate = itemDao.getItemById(id)
+            updateItemName(newDate?.itemName.toString())
+            updateBirthDate(newDate?.birthDate.toString())
+            updateExpiredDate(newDate?.expiredDate.toString())
+            updateCheck(newDate?.remindDate.toString() != "null" && newDate?.remindDate.toString() != "")
+            updateRemindDate(newDate?.remindDate.toString())
         }
     }
 

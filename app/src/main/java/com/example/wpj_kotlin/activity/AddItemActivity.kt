@@ -29,12 +29,17 @@ class AddItemActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val selectedId = intent.getIntExtra("selectedId", -1)
+        if ( selectedId != -1) { viewModel.reviseDataById(selectedId) }
+
         enableEdgeToEdge()
         setContent {
             WPJ_KotlinTheme {
                 val showBirthDialog = remember { mutableStateOf(false) }
                 val showExpiredDialog = remember { mutableStateOf(false) }
-                val showRemindDialog= remember { mutableStateOf(false) }
+                val showRemindDialog = remember { mutableStateOf(false) }
+
+                val selectedName = viewModel.itemName.value
                 val selectedBirthDate = viewModel.birthDate.value
                 val selectedExpiredDate = viewModel.expiredDate.value
                 val switchState = viewModel.switchState.value
@@ -42,14 +47,20 @@ class AddItemActivity : ComponentActivity() {
                     onCancelClick = { onBackPressed() },
                     onSaveClick = {
                         val newItem = Item(
-                            itemName = viewModel.itemName.value,
+                            itemName = selectedName,
                             birthDate = selectedBirthDate,
                             expiredDate = selectedExpiredDate,
                             remindDate = if (switchState) viewModel.remindDate.value else null
                         )
-                        viewModel.insertItem(newItem)
                         onBackPressed()
-                        Toast.makeText(this, getText(R.string.toast_add_item_success), Toast.LENGTH_SHORT).show()
+                        if (selectedId == -1) {
+                            viewModel.insertItem(newItem)
+                            Toast.makeText(this, getText(R.string.toast_add_item_success), Toast.LENGTH_SHORT).show()
+                        } else {
+                            viewModel.fixItem(selectedId, newItem)
+                            Toast.makeText(this, getText(R.string.toast_fix_item_success), Toast.LENGTH_SHORT).show()
+                        }
+
                     },
                     onTextChanged = { name -> viewModel.updateItemName(name) },
                     onBirthDateClick = { showBirthDialog.value = true },
@@ -62,7 +73,8 @@ class AddItemActivity : ComponentActivity() {
                     },
                     manufactureDateTextValue = selectedBirthDate,
                     expiredDateTextValue = selectedExpiredDate,
-                    switchState = switchState
+                    switchState = switchState,
+                    itemName = selectedName
                 )
 
                 if (showBirthDialog.value) {

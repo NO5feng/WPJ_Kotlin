@@ -14,6 +14,10 @@ interface ItemDao {
     @Query("SELECT * FROM item_table WHERE id = :id")
     suspend fun getItemById(id: Int): Item?
 
+    @Query("UPDATE item_table SET itemName = :itemName, birthDate = :birthDate, " +
+            "expiredDate = :expiredDate, remindDate = :remindDate WHERE id = :id;")
+    suspend fun fixItemById(id: Int, itemName: String, birthDate: String, expiredDate: String, remindDate:String)
+
     @Update
     suspend fun updateItem(item: Item)
 

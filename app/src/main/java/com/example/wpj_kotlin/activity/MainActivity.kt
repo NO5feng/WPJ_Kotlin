@@ -62,8 +62,10 @@ class MainActivity : ComponentActivity() {
                         Log.d("MainActivity", "Text changed: $text")
                     },
                     onAddBtnClick = { startActivity(Intent(this, AddItemActivity::class.java)) },
-                    slideStart = {
-
+                    slideStart = { i ->
+                        val intent = Intent(this, AddItemActivity::class.java)
+                        intent.putExtra("selectedId", i)
+                        startActivity(intent)
                     },
                     slideEnd = { i ->
                         selectedItemId.value = i

@@ -54,7 +54,8 @@ fun AddItemUI(
     onSwitch: (Boolean) -> Unit, onBirthDateClick: () -> Unit, onExpiredDateClick: () -> Unit,
     onAddImageClick: () -> Unit,
 
-    manufactureDateTextValue: String, expiredDateTextValue: String, switchState: Boolean
+    manufactureDateTextValue: String, expiredDateTextValue: String, switchState: Boolean,
+    itemName: String = ""
     ) {
     val context = LocalContext.current
     val yellow = ContextCompat.getColor(context, R.color.yellow)
@@ -69,8 +70,12 @@ fun AddItemUI(
     val addImageTitle = context.getString(R.string.add_src_input)
     val image = painterResource(id = R.drawable.image)
     val height = Rect().top + 20
-    val currentText = remember { mutableStateOf(TextFieldValue()) }
+    val currentText = remember { mutableStateOf("") }
     val debouncedClick = remember { onAddImageClick.deBounce() }
+
+    if (itemName != "" && itemName != "null") {
+        currentText.value = itemName
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +116,7 @@ fun AddItemUI(
             value = currentText.value,
             onValueChange = {
                 currentText.value = it
-                onTextChanged(it.text)
+                onTextChanged(it)
             },
             singleLine = true,
             textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
@@ -123,7 +128,7 @@ fun AddItemUI(
                             .background(Color.Transparent)
                             .padding(start = 15.dp, bottom = 5.dp)
                     ) {
-                        if (currentText.value.text.isEmpty()) {
+                        if (currentText.value.isEmpty()) {
                             Text(text = editTitle, fontSize = 18.sp, color = Color(grey))
                         }
                         innerTextField()
@@ -297,7 +302,8 @@ fun GreetingPreview() {
             onAddImageClick = {},
             manufactureDateTextValue = "2024-08-08",
             expiredDateTextValue = "2024-09-08",
-            switchState = false
+            switchState = false,
+            itemName = "hahaha"
         )
     }
 }
