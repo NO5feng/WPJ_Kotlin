@@ -29,7 +29,6 @@ import com.example.wpj_kotlin.database.NewItemViewModelFactory
 import com.example.wpj_kotlin.database.database_item.Item
 import com.example.wpj_kotlin.ui.AddItemUI
 import com.example.wpj_kotlin.utils.DateTimeUtils
-import com.example.wpj_kotlin.utils.PermissionHelper
 import com.example.wpj_kotlin.utils.getBitmapFromUri
 import com.example.wpj_kotlin.utils.saveImageToGallery
 import com.example.wpj_kotlin.utils.switchTimesTamp
@@ -39,7 +38,6 @@ class AddItemActivity : ComponentActivity() {
     private val viewModel: NewItemViewModel by viewModels {
         NewItemViewModelFactory(application)
     }
-    private lateinit var permissionHelper: PermissionHelper
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
