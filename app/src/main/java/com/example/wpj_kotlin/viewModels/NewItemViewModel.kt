@@ -1,6 +1,7 @@
 package com.example.wpj_kotlin.viewModels
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -33,6 +34,13 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
 
     private val _itemCards = mutableStateOf<List<ItemCard>>(emptyList())
     val itemCards: State<List<ItemCard>> = _itemCards
+
+    private val _imageDate = mutableStateOf<Bitmap?>(null)
+    val imageDate: State<Bitmap?> = _imageDate
+
+    fun updateImageDate(imageDate: Bitmap) {
+        _imageDate.value = imageDate
+    }
 
     fun updateItemName(newName: String) {
         _itemName.value = newName

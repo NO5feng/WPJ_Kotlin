@@ -32,5 +32,8 @@
     <string name="dialog_Delete_btn">删除</string>
     <string name="set_button2">set_button2</string>
 
+    <string name="bottomSheet_open_photo_album">从相册中选择</string>
+    <string name="bottomSheet_use_camera">使用相机</string>
+
     <string name="dialog_delete_content">删除后，无法恢复，考虑清楚哦  :)</string>"
 </resources>

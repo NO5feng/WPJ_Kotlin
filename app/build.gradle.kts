@@ -53,6 +53,8 @@ android {
 dependencies {
     // 滑动模块
     implementation(libs.swipe)
+    // 底部弹窗
+    implementation(libs.material3)
     // room 数据库
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

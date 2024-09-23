@@ -1,24 +1,37 @@
 package com.example.wpj_kotlin.activity
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.components.BirthDatePickerDialog
 import com.example.wpj_kotlin.components.ExpiredDatePickerDialog
+import com.example.wpj_kotlin.components.ImagePickerBottomSheet
 import com.example.wpj_kotlin.components.RemindPickerDialog
 import com.example.wpj_kotlin.database.NewItemViewModelFactory
 import com.example.wpj_kotlin.database.database_item.Item
 import com.example.wpj_kotlin.ui.AddItemUI
 import com.example.wpj_kotlin.utils.DateTimeUtils
+import com.example.wpj_kotlin.utils.PermissionHelper
+import com.example.wpj_kotlin.utils.getBitmapFromUri
+import com.example.wpj_kotlin.utils.saveImageToGallery
 import com.example.wpj_kotlin.utils.switchTimesTamp
 import com.example.wpj_kotlin.viewModels.NewItemViewModel
 
@@ -26,6 +39,8 @@ class AddItemActivity : ComponentActivity() {
     private val viewModel: NewItemViewModel by viewModels {
         NewItemViewModelFactory(application)
     }
+    private lateinit var permissionHelper: PermissionHelper
+    @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,14 +50,70 @@ class AddItemActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WPJ_KotlinTheme {
+                val context = LocalContext.current
                 val showBirthDialog = remember { mutableStateOf(false) }
                 val showExpiredDialog = remember { mutableStateOf(false) }
                 val showRemindDialog = remember { mutableStateOf(false) }
+                val showImageBottomSheet = remember { mutableStateOf(false) }
+                val cameraPermissionGranted = remember { mutableStateOf(false) }
+                val storagePermissionGranted = remember { mutableStateOf(false) }
 
                 val selectedName = viewModel.itemName.value
                 val selectedBirthDate = viewModel.birthDate.value
                 val selectedExpiredDate = viewModel.expiredDate.value
                 val switchState = viewModel.switchState.value
+
+                val singleLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.PickVisualMedia(),
+                    onResult = { uri ->
+                        uri?.let {
+                            val bitmap = getBitmapFromUri(context, it)
+                            viewModel.updateImageDate(bitmap)
+                        }
+                    }
+                )
+                val cameraLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.TakePicturePreview()
+                ) { bitmap ->
+                    bitmap?.let {
+                        saveImageToGallery(context, bitmap)
+                        viewModel.updateImageDate(bitmap)
+                    }
+                }
+
+                val storagePermissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission()
+                ) { isGranted ->
+                    storagePermissionGranted.value = isGranted
+                    if (isGranted) {
+                        cameraLauncher.launch()
+                    } else {
+                        Toast.makeText(context, "存储权限被拒绝", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val cameraPermissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission()
+                ) { isGranted ->
+                    cameraPermissionGranted.value = isGranted
+                    if (isGranted) {
+                        storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    } else {
+                        Toast.makeText(context, "相机权限被拒绝", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                fun checkAndRequestPermissions() {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        cameraPermissionGranted.value = true
+                        storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    } else {
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }
+
                 AddItemUI(
                     onCancelClick = { onBackPressed() },
                     onSaveClick = {
@@ -69,7 +140,7 @@ class AddItemActivity : ComponentActivity() {
                         viewModel.updateCheck(check)
                         if (check) { showRemindDialog.value = true }},
                     onAddImageClick = {
-                        Toast.makeText(this, getText(R.string.add_image_remind), Toast.LENGTH_SHORT).show()
+                        showImageBottomSheet.value = true
                     },
                     manufactureDateTextValue = selectedBirthDate,
                     expiredDateTextValue = selectedExpiredDate,
@@ -109,6 +180,21 @@ class AddItemActivity : ComponentActivity() {
                         onCancel = {
                             viewModel.updateCheck(false)
                             showRemindDialog.value = false
+                        }
+                    )
+                }
+
+                if (showImageBottomSheet.value) {
+                    ImagePickerBottomSheet(
+                        onConfirm = { type ->
+                            when (type) {
+                                1 -> checkAndRequestPermissions()
+                                2 -> singleLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            }
+                            showImageBottomSheet.value = false
+                        },
+                        onCancel = {
+                            showImageBottomSheet.value = false
                         }
                     )
                 }

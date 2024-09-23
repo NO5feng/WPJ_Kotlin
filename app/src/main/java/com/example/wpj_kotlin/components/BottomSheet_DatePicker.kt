@@ -4,17 +4,22 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -30,11 +35,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import com.example.wpj_kotlin.R
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
+import com.example.wpj_kotlin.ui.icons.Add_a_photo
+import com.example.wpj_kotlin.ui.icons.Add_photo_alternate
 import com.example.wpj_kotlin.utils.DateTimeUtils
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -302,12 +310,130 @@ fun RemindPickerDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImagePickerBottomSheet(
+    onConfirm: (Int) -> Unit,
+    onCancel: () -> Unit
+) {
+    val context = LocalContext.current
+    val white = ContextCompat.getColor(context, R.color.milk_white)
+    val options1 = context.getString(R.string.bottomSheet_use_camera)
+    val options2 = context.getString(R.string.bottomSheet_open_photo_album)
+
+    ModalBottomSheet(
+        onDismissRequest = onCancel,
+        containerColor = Color(white)
+    ) {
+        Box(
+            modifier = Modifier
+                .height(170.dp)
+
+        ) {
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .clickable {
+                            onConfirm(1)
+                        }
+                ) {
+                    Text(text = options1)
+                    Icon(
+                        imageVector = Add_a_photo,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(27.dp)
+                            .padding(start = 5.dp)
+                    )
+                }
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .clickable { onConfirm(2) }
+                ) {
+                    Text(text = options2)
+                    Icon(
+                        imageVector = Add_photo_alternate,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(27.dp)
+                            .padding(start = 5.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/*
+由于 使用三方插件 Android Studio 没办法渲染ui 不方便调试 弄个这个 专门用了调试 UI 然后粘到上面的类中
+ */
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun UiTest(
+    onConfirm: (String) -> Unit,
+    onCancel: () -> Unit
+) {
+    val context = LocalContext.current
+    val pink = ContextCompat.getColor(context, R.color.pink)
+    val grey = ContextCompat.getColor(context, R.color.grey)
+    val white = ContextCompat.getColor(context, R.color.milk_white)
+
+    val options1 = context.getString(R.string.bottomSheet_use_camera)
+    val options2 = context.getString(R.string.bottomSheet_open_photo_album)
+
+
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .height(170.dp)
+
+        ) {
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                ) {
+                    Text(text = options1)
+                }
+                Row (
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                ) {
+                    Text(text = options2)
+                }
+            }
+        }
+    }
+}
+
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun BrithDateDialogPreview() {
     WPJ_KotlinTheme {
-        RemindPickerDialog(
+        UiTest(
             onConfirm = {},
             onCancel = {}
         )

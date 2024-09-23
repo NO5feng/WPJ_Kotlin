@@ -9,6 +9,7 @@ data class Item(
     val birthDate: String,
     val expiredDate: String,
     val remindDate: String? = null,
+    val imageDate: ByteArray? = null,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 )
 
