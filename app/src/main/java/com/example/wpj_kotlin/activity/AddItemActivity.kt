@@ -2,9 +2,13 @@ package com.example.wpj_kotlin.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,6 +53,7 @@ class AddItemActivity : ComponentActivity() {
         setContent {
             WPJ_KotlinTheme {
                 val context = LocalContext.current
+                var imageUri: Uri? = null
                 val showBirthDialog = remember { mutableStateOf(false) }
                 val showExpiredDialog = remember { mutableStateOf(false) }
                 val showRemindDialog = remember { mutableStateOf(false) }
@@ -61,21 +66,23 @@ class AddItemActivity : ComponentActivity() {
                 val selectedExpiredDate = viewModel.expiredDate.value
                 val switchState = viewModel.switchState.value
 
-                val singleLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.PickVisualMedia(),
-                    onResult = { uri ->
-                        uri?.let {
-                            val bitmap = getBitmapFromUri(context, it)
-                            viewModel.updateImageDate(bitmap)
-                        }
+                fun createImageUri(context: Context): Uri? {
+                    val resolver = context.contentResolver
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${System.currentTimeMillis()}.jpg")
+                        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/WPG")
                     }
-                )
+                    return resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                }
+
                 val cameraLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.TakePicturePreview()
-                ) { bitmap ->
-                    bitmap?.let {
-                        saveImageToGallery(context, bitmap)
-                        viewModel.updateImageDate(bitmap)
+                    contract = ActivityResultContracts.TakePicture()
+                ) { success ->
+                    if (success) {
+                        imageUri?.let {
+                            viewModel.updateImageDate(getBitmapFromUri(context, it))
+                        }
                     }
                 }
 
@@ -84,7 +91,8 @@ class AddItemActivity : ComponentActivity() {
                 ) { isGranted ->
                     storagePermissionGranted.value = isGranted
                     if (isGranted) {
-                        cameraLauncher.launch()
+                        imageUri = createImageUri(context)
+                        imageUri?.let { uri -> cameraLauncher.launch(uri) }
                     } else {
                         Toast.makeText(context, "存储权限被拒绝", Toast.LENGTH_SHORT).show()
                     }
@@ -111,6 +119,16 @@ class AddItemActivity : ComponentActivity() {
                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     }
                 }
+
+                val singleLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.PickVisualMedia(),
+                    onResult = { uri ->
+                        uri?.let {
+                            val bitmap = getBitmapFromUri(context, it)
+                            viewModel.updateImageDate(bitmap)
+                        }
+                    }
+                )
 
                 AddItemUI(
                     onCancelClick = { onBackPressed() },
