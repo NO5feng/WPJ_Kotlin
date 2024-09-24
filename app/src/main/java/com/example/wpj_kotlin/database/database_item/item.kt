@@ -1,5 +1,6 @@
 package com.example.wpj_kotlin.database.database_item
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -17,5 +18,6 @@ data class ItemCard(
     val id: Int,
     val itemName: String,
     val type: Int? = 1,
-    val day: String
+    val day: String,
+    val imagePath: Bitmap? = null
 )

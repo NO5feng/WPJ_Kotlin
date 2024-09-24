@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 val content = context.getString(R.string.dialog_delete_content)
 
                 val itemCards = viewModel.itemCards
+                val imagePage = remember { mutableStateOf("") }
                 val showDeleteDialog = remember { mutableStateOf(false) }
                 val selectedItemId = remember { mutableStateOf<Int?>(null) }
                 LaunchedEffect(Unit) {

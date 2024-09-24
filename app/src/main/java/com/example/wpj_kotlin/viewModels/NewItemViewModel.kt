@@ -10,6 +10,7 @@ import com.example.wpj_kotlin.database.database_item.Item
 import com.example.wpj_kotlin.database.database_item.ItemCard
 import com.example.wpj_kotlin.database.database_item.ItemDao
 import com.example.wpj_kotlin.utils.DateTimeUtils
+import com.example.wpj_kotlin.utils.getBitmapFromFile
 import com.example.wpj_kotlin.utils.switchTimesTamp
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -72,7 +73,8 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
 
     fun fixItem(id: Int, item: Item) {
         viewModelScope.launch {
-            itemDao.fixItemById(id, item.itemName, item.birthDate, item.expiredDate, item.remindDate.toString())
+            itemDao.fixItemById(id, item.itemName, item.birthDate, item.expiredDate,
+                item.remindDate.toString(), item.imagePath.toString())
         }
     }
 
@@ -117,7 +119,8 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
                     id = item.id,
                     itemName = itemName,
                     type = type,
-                    day = dayDifference
+                    day = dayDifference,
+                    imagePath = item.imagePath?.let { getBitmapFromFile(it) }
                 )
             }
         } ?: emptyList()
