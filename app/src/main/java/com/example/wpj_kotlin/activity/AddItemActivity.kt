@@ -66,6 +66,7 @@ class AddItemActivity : ComponentActivity() {
                 val selectedBirthDate = viewModel.birthDate.value
                 val selectedExpiredDate = viewModel.expiredDate.value
 
+                // 唤起 相机
                 val cameraLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.TakePicture()
                 ) { success ->
@@ -78,6 +79,20 @@ class AddItemActivity : ComponentActivity() {
                         }
                     }
                 }
+
+                // 唤起 照片选择器
+                val singleLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.PickVisualMedia(),
+                    onResult = { uri ->
+                        uri?.let {
+                            val bitmap = getBitmapFromUri(context, it)
+                            bitmap.let { bmp ->
+                                val savedFilePath = saveBitmapToFile(context, bmp)
+                                viewModel.updateImagePath(savedFilePath.toString())
+                            }
+                        }
+                    }
+                )
 
                 val storagePermissionLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestPermission()
@@ -112,20 +127,6 @@ class AddItemActivity : ComponentActivity() {
                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     }
                 }
-
-                // 照片选择器
-                val singleLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.PickVisualMedia(),
-                    onResult = { uri ->
-                        uri?.let {
-                            val bitmap = getBitmapFromUri(context, it)
-                            bitmap.let { bmp ->
-                                val savedFilePath = saveBitmapToFile(context, bmp)
-                                viewModel.updateImagePath(savedFilePath.toString())
-                            }
-                        }
-                    }
-                )
 
                 AddItemUI(
                     onCancelClick = { onBackPressed() },
