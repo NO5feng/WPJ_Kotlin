@@ -1,7 +1,6 @@
 package com.example.wpj_kotlin.viewModels
 
 import android.app.Application
-import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -35,11 +34,11 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
     private val _itemCards = mutableStateOf<List<ItemCard>>(emptyList())
     val itemCards: State<List<ItemCard>> = _itemCards
 
-    private val _imageDate = mutableStateOf<Bitmap?>(null)
-    val imageDate: State<Bitmap?> = _imageDate
+    private val _imagePath = mutableStateOf<String?>(null)
+    val imagePath: State<String?> = _imagePath
 
-    fun updateImageDate(imageDate: Bitmap) {
-        _imageDate.value = imageDate
+    fun updateImagePath(imagePath: String) {
+        _imagePath.value = imagePath
     }
 
     fun updateItemName(newName: String) {
@@ -94,11 +93,16 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
     fun reviseDataById(id: Int) {
         viewModelScope.launch {
             val newDate = itemDao.getItemById(id)
-            updateItemName(newDate?.itemName.toString())
-            updateBirthDate(newDate?.birthDate.toString())
-            updateExpiredDate(newDate?.expiredDate.toString())
-            updateCheck(newDate?.remindDate.toString() != "null" && newDate?.remindDate.toString() != "")
-            updateRemindDate(newDate?.remindDate.toString())
+            newDate?.let {
+                updateItemName(newDate.itemName)
+                updateBirthDate(newDate.birthDate)
+                updateExpiredDate(newDate.expiredDate)
+                updateCheck(newDate.remindDate.toString() != "null" && newDate.remindDate.toString() != "")
+                updateRemindDate(newDate.remindDate.toString())
+                newDate.imagePath?.let {
+                    updateImagePath(newDate.imagePath)
+                }
+            }
         }
     }
 

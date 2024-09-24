@@ -1,8 +1,10 @@
 package com.example.wpj_kotlin.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -54,7 +57,7 @@ fun AddItemUI(
     onAddImageClick: () -> Unit,
 
     manufactureDateTextValue: String, expiredDateTextValue: String, switchState: Boolean,
-    itemName: String = ""
+    itemName: String = "", bitmap: Bitmap? = null
     ) {
     val context = LocalContext.current
     val yellow = ContextCompat.getColor(context, R.color.yellow)
@@ -67,8 +70,9 @@ fun AddItemUI(
     val expiredDateTitle = context.getString(R.string.expired_date)
     val remindTitle = context.getString(R.string.add_remind)
     val addImageTitle = context.getString(R.string.add_src_input)
-    val image = painterResource(id = R.drawable.image)
     val height = Rect().top + 20
+    val imageHeight = if (bitmap == null) 80.dp else 300.dp
+    val image = painterResource(id = R.drawable.image)
     val currentText = remember { mutableStateOf("") }
     val debouncedClick = remember { onAddImageClick.deBounce() }
 
@@ -251,7 +255,7 @@ fun AddItemUI(
 
         Box(
             modifier = Modifier
-                .height(80.dp)
+                .height(imageHeight)
                 .width(320.dp)
                 .padding(top = 30.dp)
                 .clip(
@@ -263,25 +267,38 @@ fun AddItemUI(
                 .background(Color(yellow))
                 .combinedClickable( onClick = { debouncedClick() } )
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(top = 13.dp)
-            ) {
-                Icon(
-                    painter = image,
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
-                    tint = Color.White,
                     modifier = Modifier
-                        .height(25.dp)
-                        .width(100.dp)
+                        .fillMaxSize()
+                        .padding(
+                            start = 10.dp , end = 10.dp,
+                            top = 10.dp, bottom = 10.dp
+                        )
                 )
-                Text(
-                    text = addImageTitle,
-                    fontSize = 18.sp, color = Color(grey),
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .padding(start = 10.dp, top = 1.dp)
-                )
+                        .padding(top = 13.dp)
+                ) {
+                    Icon(
+                        painter = image,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .height(25.dp)
+                            .width(100.dp)
+                    )
+                    Text(
+                        text = addImageTitle,
+                        fontSize = 18.sp, color = Color(grey),
+                        modifier = Modifier
+                            .padding(start = 10.dp, top = 1.dp)
+                    )
+                }
             }
         }
     }

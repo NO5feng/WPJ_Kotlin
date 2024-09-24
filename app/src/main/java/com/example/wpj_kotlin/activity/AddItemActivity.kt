@@ -2,13 +2,10 @@ package com.example.wpj_kotlin.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
@@ -33,8 +29,11 @@ import com.example.wpj_kotlin.database.NewItemViewModelFactory
 import com.example.wpj_kotlin.database.database_item.Item
 import com.example.wpj_kotlin.ui.AddItemUI
 import com.example.wpj_kotlin.utils.DateTimeUtils
+import com.example.wpj_kotlin.utils.createImageUri
+import com.example.wpj_kotlin.utils.getBitmapFromFile
 import com.example.wpj_kotlin.utils.getBitmapFromUri
-import com.example.wpj_kotlin.utils.saveImageToGallery
+import com.example.wpj_kotlin.utils.getRealPathFromUri
+import com.example.wpj_kotlin.utils.saveBitmapToFile
 import com.example.wpj_kotlin.utils.switchTimesTamp
 import com.example.wpj_kotlin.viewModels.NewItemViewModel
 
@@ -52,36 +51,30 @@ class AddItemActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WPJ_KotlinTheme {
-                val context = LocalContext.current
                 var imageUri: Uri? = null
+                val context = LocalContext.current
                 val showBirthDialog = remember { mutableStateOf(false) }
-                val showExpiredDialog = remember { mutableStateOf(false) }
                 val showRemindDialog = remember { mutableStateOf(false) }
+                val showExpiredDialog = remember { mutableStateOf(false) }
                 val showImageBottomSheet = remember { mutableStateOf(false) }
                 val cameraPermissionGranted = remember { mutableStateOf(false) }
                 val storagePermissionGranted = remember { mutableStateOf(false) }
 
+                val imagePath = viewModel.imagePath.value
                 val selectedName = viewModel.itemName.value
+                val switchState = viewModel.switchState.value
                 val selectedBirthDate = viewModel.birthDate.value
                 val selectedExpiredDate = viewModel.expiredDate.value
-                val switchState = viewModel.switchState.value
-
-                fun createImageUri(context: Context): Uri? {
-                    val resolver = context.contentResolver
-                    val contentValues = ContentValues().apply {
-                        put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${System.currentTimeMillis()}.jpg")
-                        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/WPG")
-                    }
-                    return resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                }
 
                 val cameraLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.TakePicture()
                 ) { success ->
                     if (success) {
                         imageUri?.let {
-                            viewModel.updateImageDate(getBitmapFromUri(context, it))
+                            val filePath = getRealPathFromUri(context, it)
+                            if (filePath != null) {
+                                viewModel.updateImagePath(filePath)
+                            }
                         }
                     }
                 }
@@ -120,12 +113,16 @@ class AddItemActivity : ComponentActivity() {
                     }
                 }
 
+                // 照片选择器
                 val singleLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                     onResult = { uri ->
                         uri?.let {
                             val bitmap = getBitmapFromUri(context, it)
-                            viewModel.updateImageDate(bitmap)
+                            bitmap.let { bmp ->
+                                val savedFilePath = saveBitmapToFile(context, bmp)
+                                viewModel.updateImagePath(savedFilePath.toString())
+                            }
                         }
                     }
                 )
@@ -137,7 +134,8 @@ class AddItemActivity : ComponentActivity() {
                             itemName = selectedName,
                             birthDate = selectedBirthDate,
                             expiredDate = selectedExpiredDate,
-                            remindDate = if (switchState) viewModel.remindDate.value else null
+                            remindDate = if (switchState) viewModel.remindDate.value else null,
+                            imagePath = imagePath
                         )
                         onBackPressed()
                         if (selectedId == -1) {
@@ -161,7 +159,8 @@ class AddItemActivity : ComponentActivity() {
                     manufactureDateTextValue = selectedBirthDate,
                     expiredDateTextValue = selectedExpiredDate,
                     switchState = switchState,
-                    itemName = selectedName
+                    itemName = selectedName,
+                    bitmap = imagePath?.let { getBitmapFromFile(it) },
                 )
 
                 if (showBirthDialog.value) {
