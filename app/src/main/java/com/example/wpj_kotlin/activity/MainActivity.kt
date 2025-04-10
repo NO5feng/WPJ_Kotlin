@@ -60,7 +60,8 @@ class MainActivity : ComponentActivity() {
                 }
                 MainUi(
                     onTextChanged = { text ->
-                        Log.d("MainActivity", "Text changed: $text")
+                        Log.d("MainActivity", "搜索框: $text")
+                        viewModel.getAllItem(text)
                     },
                     onAddBtnClick = { startActivity(Intent(this, AddItemActivity::class.java)) },
                     slideStart = { i ->

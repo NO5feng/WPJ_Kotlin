@@ -78,10 +78,10 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getAllItem() {
+    fun getAllItem(targetItemName:String ?= null) {
         viewModelScope.launch {
             val items = itemDao.getAllItems()  // 从数据库中获取所有 items
-            _itemCards.value = getItemCards(items)  // 使用你的转换函数
+            _itemCards.value = getItemCards(items, targetItemName)  // 使用你的转换函数
         }
     }
 
@@ -108,21 +108,30 @@ class NewItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private fun getItemCards(items: List<Item>? = null): List<ItemCard> {
+    private fun getItemCards(items: List<Item>? = null, targetItemName:String ?= null): List<ItemCard> {
         val currentTime = DateTimeUtils.getCurrentTime().switchTimesTamp()
-        return items?.groupBy { it.itemName }?.flatMap { (itemName, itemList) ->
-            itemList.map { item ->
-                val expiredTime = item.expiredDate.switchTimesTamp()
-                val type = if (expiredTime >= currentTime) 1 else 2
-                val dayDifference = abs(((expiredTime - currentTime) / (60 * 60 * 24))).toString()
-                ItemCard(
-                    id = item.id,
-                    itemName = itemName,
-                    type = type,
-                    day = dayDifference,
-                    imagePath = item.imagePath?.let { getBitmapFromFile(it) }
-                )
-            }
-        } ?: emptyList()
+        return items ?.let { originalItems ->
+                if (targetItemName.isNullOrBlank()) {
+                    originalItems
+                } else {
+                    // 如果有目标名称，先过滤包含目标名称的 Item
+                    originalItems.filter { item ->
+                        item.itemName.contains(targetItemName, ignoreCase = true)
+                    }
+                }
+            }?.groupBy { it.itemName }?.flatMap { (itemName, itemList) ->
+                itemList.map { item ->
+                    val expiredTime = item.expiredDate.switchTimesTamp()
+                    val type = if (expiredTime >= currentTime) 1 else 2
+                    val dayDifference = abs((expiredTime - currentTime) / (60 * 60 * 24)).toString()
+                    ItemCard(
+                        id = item.id,
+                        itemName = itemName,
+                        type = type,
+                        day = dayDifference,
+                        imagePath = item.imagePath?.let { getBitmapFromFile(it) }
+                    )
+                }
+        } ?: emptyList() // items 为 null 时返回空列表
     }
 }
