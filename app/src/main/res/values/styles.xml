@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ClockActivity.Transparent" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- 保持窗口透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/pink</item>
+        <item name="android:navigationBarColor">@color/milk_white</item>
+        <!-- 可选：在 XML 中也可以配置进入/退出动画 -->
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
+    </style>
+
+    <style name="Theme.WPJ_Kotlin" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

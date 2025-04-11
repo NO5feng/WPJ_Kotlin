@@ -7,9 +7,6 @@ import android.os.Handler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import com.example.wpj_kotlin.activity.ui.theme.WPJ_KotlinTheme
 import com.example.wpj_kotlin.ui.WelcomeUi
 
@@ -30,7 +27,7 @@ class WelcomeActivity : ComponentActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 1500)
+        }, 800)
     }
 }
 

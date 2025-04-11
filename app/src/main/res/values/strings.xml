@@ -20,6 +20,9 @@
     <string name="add_src_input">插入物品图片</string>
     <string name="add_image_remind">暂未适配添加图片:)</string>
 
+    <!--    clock页面-->
+    <string name="clock_title">我的提醒</string>
+
     <!--    dialog-->
     <string name="dialog_remind_title">选择提醒时间</string>
     <string name="dialog_datePick_title">生产日期</string>
@@ -34,6 +37,5 @@
 
     <string name="bottomSheet_open_photo_album">从相册中选择</string>
     <string name="bottomSheet_use_camera">使用相机</string>
-
-    <string name="dialog_delete_content">删除后，无法恢复，考虑清楚哦  :)</string>"
+    <string name="dialog_delete_content">删除后，无法恢复，考虑清楚哦  :)</string>
 </resources>

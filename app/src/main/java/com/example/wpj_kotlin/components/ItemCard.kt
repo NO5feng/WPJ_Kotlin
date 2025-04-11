@@ -94,15 +94,15 @@ fun ItemCard(
     }
 
     val archive = SwipeAction(
-        icon = rememberVectorPainter(Icons.Filled.Create),
-        background = Color.White,
-        onSwipe = { slideStart(itemCard.id) }
-    )
-    val snooze = SwipeAction(
         icon = rememberVectorPainter(Icons.Filled.Delete),
-        background = Color(color),
+        background = Color.White,
         isUndo = true,
         onSwipe = { slideEnd(itemCard.id) },
+    )
+    val snooze = SwipeAction(
+        icon = rememberVectorPainter(Icons.Filled.Create),
+        background = Color(color),
+        onSwipe = { slideStart(itemCard.id) }
     )
 
     Column(

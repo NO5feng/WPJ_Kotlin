@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-public val Add_photo_alternate: ImageVector
+val Add_photo_alternate: ImageVector
     get() {
         if (_Add_photo_alternate != null) {
             return _Add_photo_alternate!!
