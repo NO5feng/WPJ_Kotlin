@@ -1,3 +1,7 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -12,8 +16,11 @@ android {
         applicationId = "com.example.wpj_kotlin"
         minSdk = 25
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.2"
+
+        // Version code schema:
+        // "1.2.3"          -> 1020300
+        versionCode = 1020000
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -28,6 +35,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                outputFileName =
+                    "${name}_wpj_v${versionName}_${versionCode}_${releaseTime()}.apk"
+            }
         }
     }
     compileOptions {
@@ -75,4 +91,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+fun releaseTime(): String {
+    return SimpleDateFormat("yyyyMMdd").apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }.format(Date())
 }
