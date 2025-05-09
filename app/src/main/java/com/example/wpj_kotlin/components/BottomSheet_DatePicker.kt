@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
@@ -47,7 +47,7 @@ import com.example.wpj_kotlin.utils.DateTimeUtils
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BirthDatePickerDialog(
     onConfirm: (String) -> Unit,
@@ -172,7 +172,8 @@ fun ExpiredDatePickerDialog(
 
     var num by remember { mutableStateOf("1") }
     var type by remember { mutableStateOf("年") }
-
+    var chooseItem by remember { mutableStateOf(emptyList<String>()) }
+    chooseItem = if (type == "日") DateTimeUtils.getDaysList() else DateTimeUtils.getMonthsList()
     Dialog(
         onDismissRequest = onCancel,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -220,17 +221,18 @@ fun ExpiredDatePickerDialog(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                ScrollSelector(
-                    items = DateTimeUtils.getMonthsList(),
-                    onItemSelected = { _, i -> num = i },
-                    selectedColor = Color(pink),
-                )
+                key(chooseItem.hashCode()) { // 列表变化时触发重组
+                    ScrollSelector(
+                        items = chooseItem,
+                        onItemSelected = { _, i -> num = i },
+                        selectedColor = Color(pink),
+                    )
+                }
                 ScrollSelector(
                     items = DateTimeUtils.getChineseYearMonthAndDayList(),
                     onItemSelected = { _, t -> type = t },
                     selectedColor = Color(pink),
                 )
-
             }
         }
     }

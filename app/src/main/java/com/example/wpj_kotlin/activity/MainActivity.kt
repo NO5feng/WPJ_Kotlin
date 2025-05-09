@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
                 val selectedItemId = remember { mutableStateOf<Int?>(null) }
                 LaunchedEffect(Unit) {
                     viewModel.getAllItem()  // 在启动时加载数据
+                    Intent(context, ClockActivity::class.java)
                 }
                 DisposableEffect(Unit) {
                     val observer = LifecycleEventObserver { _, event ->

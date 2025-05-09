@@ -105,6 +105,9 @@ fun MainUi(
     val offsetX = remember { Animatable(0f) }
     val offsetY = remember { Animatable(0f) }
     var isClicked by remember { mutableStateOf(false) }
+    val iconSizePx = with(density) { 33.dp.toPx() }
+    val targetX = remember { (screenWidthPx - iconSizePx) / 2 }
+    val targetY = remember { (screenHeightPx - iconSizePx) / 2 }
     // 使用协程启动动画，可记住一个 scope
     val coroutineScope = rememberCoroutineScope()
     val iconColor by animateColorAsState(
@@ -117,6 +120,8 @@ fun MainUi(
         animationSpec = tween(durationMillis = 800),
         label = "iconSizeAnimation"
     )
+
+
 
     Box (modifier = Modifier.fillMaxSize()) {
         Column(
@@ -234,11 +239,6 @@ fun MainUi(
                     isClicked = !isClicked
                     val initialX = offsetX.value
                     val initialY = offsetY.value
-
-                    // 计算图标尺寸及屏幕中央的目标坐标（居中对齐，需要减去图标宽度的一半）
-                    val iconSizePx = with(density) { 33.dp.toPx() }
-                    val targetX = (screenWidthPx - iconSizePx) / 2
-                    val targetY = (screenHeightPx - iconSizePx) / 2
 
                     coroutineScope.launch {
                         val toCenterX = async {
